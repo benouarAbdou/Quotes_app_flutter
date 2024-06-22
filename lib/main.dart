@@ -10,7 +10,15 @@ import 'package:share_plus/share_plus.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.white, // Set the status bar color to white
+    statusBarBrightness: Brightness.light, // Set the status bar icons to dark
+    statusBarIconBrightness:
+        Brightness.dark, // Set the status bar icons to dark
+  ));
+
   runApp(const MyApp());
 }
 
@@ -21,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Quotes',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         //fontFamily: "PTSans",
@@ -117,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Screenshot(
         controller: screenshotController,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
