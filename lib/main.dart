@@ -7,16 +7,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:quotes/model/quote.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.white, // Set the status bar color to white
-    statusBarBrightness: Brightness.light, // Set the status bar icons to dark
-    statusBarIconBrightness:
-        Brightness.dark, // Set the status bar icons to dark
+    statusBarColor: Colors.white,
+    statusBarBrightness: Brightness.light,
+    statusBarIconBrightness: Brightness.dark,
   ));
 
   runApp(const MyApp());
@@ -32,7 +32,6 @@ class MyApp extends StatelessWidget {
       title: 'Quotes',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        //fontFamily: "PTSans",
         useMaterial3: false,
       ),
       home: const MyHomePage(),
@@ -50,8 +49,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Quote quote = Quote(quote: "", author: "");
   late ScreenshotController screenshotController;
+  bool isLoading = true;
 
   Future<void> getQuote() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       var req = await http.get(
         Uri.https('zenquotes.io', 'api/random'),
@@ -61,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         var jsonData = jsonDecode(req.body);
         setState(() {
           quote = Quote(quote: jsonData[0]["q"], author: jsonData[0]["a"]);
+          isLoading = false;
         });
       } else {
         setState(() {
@@ -68,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
             quote: "Check your wifi connection",
             author: "",
           );
+          isLoading = false;
         });
       }
     } catch (error) {
@@ -76,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
           quote: "Check your wifi connection",
           author: "",
         );
+        isLoading = false;
       });
       print("Error fetching quote: $error");
     }
@@ -115,7 +122,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     screenshotController = ScreenshotController();
-
     getQuote();
   }
 
@@ -131,26 +137,32 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      quote.quote,
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
+                child: Skeletonizer(
+                  enabled: isLoading,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        isLoading ? "Loading quote..." : quote.quote,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.normal,
-                          fontFamily: "PTSans"),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      quote.author,
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w300),
-                    ),
-                  ],
+                          fontFamily: "PTSans",
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        isLoading ? "Loading author..." : quote.author,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -163,7 +175,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: const Text(
                         "tap for more",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w300),
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                        ),
                       ),
                     ),
                     Row(
@@ -175,9 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.grey[700],
                           ),
                         ),
-                        const SizedBox(
-                          width: 20,
-                        ),
+                        const SizedBox(width: 20),
                         GestureDetector(
                           onTap: shareQuote,
                           child: Icon(
