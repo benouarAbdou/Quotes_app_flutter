@@ -100,8 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> shareQuote() async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      String path =
-          '${directory.path}/screenshot${DateTime.now().toIso8601String()}.jpeg';
 
       String? capturedFilePath = await screenshotController.captureAndSave(
         directory.path,
@@ -128,82 +126,92 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Screenshot(
-        controller: screenshotController,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Skeletonizer(
-                  enabled: isLoading,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        isLoading ? "Loading quote..." : quote.quote,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.normal,
-                          fontFamily: "PTSans",
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        isLoading ? "Loading author..." : quote.author,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Skeletonizer(
+                enabled: isLoading,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: getQuote,
-                      child: const Text(
-                        "tap for more",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
+                    Screenshot(
+                      controller: screenshotController,
+                      child: Container(
+                        padding: const EdgeInsets.all(40),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isLoading ? "Loading quote..." : quote.quote,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.normal,
+                                fontFamily: "PTSans",
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              isLoading ? "Loading author..." : quote.author,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: copyTextToClipboard,
-                          child: Icon(
-                            Icons.copy,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: shareQuote,
-                          child: Icon(
-                            Icons.share,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 40,
+              ),
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: getQuote,
+                    child: const Text(
+                      "tap for more",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: copyTextToClipboard,
+                        child: Icon(
+                          Icons.copy,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      GestureDetector(
+                        onTap: shareQuote,
+                        child: Icon(
+                          Icons.share,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
