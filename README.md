@@ -49,12 +49,10 @@ The app uses various Flutter packages such as:
 
 ## Screenshots
 
-Here are some visual examples of the app in action:
+Here are some screenshots of the app:
 
-### Quote Display
-<img src="assets/1.jpg" width="300" /> <img src="assets/2.jpg" width="300" /> <img src="assets/3.jpg" width="300" />
-
----
+| ![Screenshot 1](assets/1.jpg) | ![Screenshot 2](assets/2.jpg) | ![Screenshot 3](assets/3.jpg) |
+| :---------------------------------------: | :---------------------------------------: | :---------------------------------------: |
 
 ## Dependencies
 
